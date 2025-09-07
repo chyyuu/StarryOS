@@ -65,12 +65,6 @@ jobs:
       with:
         shared-key: cargo-bin-cache-${{ env.rust-toolchain }}
         cache-targets: false
-   
-    - uses: arceos-org/setup-qemu@v1
-      with:
-        version: ${{ env.qemu-version }}
-        arch_list: riscv64
-  
     
     - name: Checkout repository
       uses: actions/checkout@v4
@@ -82,7 +76,13 @@ jobs:
       uses: arceos-org/setup-musl@v1
       with:
         arch: ${{ matrix.arch }}
-      
+
+    - name: Setup QEMU
+      uses: arceos-org/setup-qemu@v1
+      with:
+        version: ${{ env.qemu-version }}
+        arch_list: riscv64
+
     - run: |
         LOG=qemu-${{ matrix.arch }}.log
         qemu-system-${{ matrix.arch }} --version
