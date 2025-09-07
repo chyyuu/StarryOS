@@ -54,23 +54,23 @@ jobs:
       RUSTUP_TOOLCHAIN: nightly-2025-05-20
     steps:
     - uses: actions/checkout@v4
+    
     - uses: dtolnay/rust-toolchain@stable
       with:
         toolchain: ${{ env.rust-toolchain }}
         components: rust-src, llvm-tools
         targets: riscv64gc-unknown-none-elf
+    
     - uses: Swatinem/rust-cache@v2
       with:
         shared-key: cargo-bin-cache-${{ env.rust-toolchain }}
         cache-targets: false
+   
     - uses: arceos-org/setup-qemu@v1
       with:
         version: ${{ env.qemu-version }}
         arch_list: riscv64
-    
-    - uses: arceos-org/setup-musl@v1
-      with:
-        arch: ${{ matrix.arch }}
+  
     
     - name: Checkout repository
       uses: actions/checkout@v4
@@ -79,7 +79,11 @@ jobs:
     
     - name: Run alpine linux fs image
       timeout-minutes: 5
-      run: |
+      uses: arceos-org/setup-musl@v1
+      with:
+        arch: ${{ matrix.arch }}
+      
+    - run: |
         LOG=qemu-${{ matrix.arch }}.log
         ${{ matrix.arch }}-linux-musl-gcc --version
         make ARCH=${{ matrix.arch }} build
