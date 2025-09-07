@@ -85,6 +85,7 @@ jobs:
       
     - run: |
         LOG=qemu-${{ matrix.arch }}.log
+        qemu-system-${{ matrix.arch }} --version
         ${{ matrix.arch }}-linux-musl-gcc --version
         wget https://dl-cdn.alpinelinux.org/alpine/latest-stable/releases/${{ matrix.arch }}/alpine-minirootfs-3.22.1-${{ matrix.arch }}.tar.gz
         mkdir rootfs
