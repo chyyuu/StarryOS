@@ -87,9 +87,18 @@ jobs:
         LOG=qemu-${{ matrix.arch }}.log
         ${{ matrix.arch }}-linux-musl-gcc --version
         make ARCH=${{ matrix.arch }} build
-        curl  -f -L https://github.com/Starry-OS/StarryOS/releases/download/rootfs-250905/rootfs-${{ matrix.arch }}.img.xz -O
-        xz -d rootfs-${{ matrix.arch }}.img.xz
-        cp rootfs-${{ matrix.arch }}.img arceos/disk.img
+        wget https://dl-cdn.alpinelinux.org/alpine/latest-stable/releases/${{ matrix.arch }}/alpine-minirootfs-3.22.1-${{ matrix.arch }}.tar.gz
+        mkdir rootfs
+        sudo tar -C rootfs -xzf alpine-minirootfs-3.22.1-${{ matrix.arch }}.tar.gz
+        dd if=/dev/zero of=disk.img bs=1M count=256
+        mkfs.ext4 disk.img
+        mkdir mnt
+        sudo mount -o loop disk.img mnt
+        sudo cp -a rootfs/* mnt/
+        sudo umount mnt
+        sudo rm -rf rootfs mnt
+        cp disk.img arceos/disk.img
+        mv disk.img rootfs-${{ matrix.arch }}.img
         make ARCH=${{ matrix.arch }} run > $LOG 2>&1
         sleep 25
         pkill qemu || true
