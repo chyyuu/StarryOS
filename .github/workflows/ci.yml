@@ -70,6 +70,12 @@ jobs:
     - uses: arceos-org/setup-musl@v1
       with:
         arch: ${{ matrix.arch }}
+    
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        submodules: "recursive"
+    
     - name: Run alpine linux fs image
       timeout-minutes: 5
       run: |
