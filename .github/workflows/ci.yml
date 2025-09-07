@@ -87,7 +87,6 @@ jobs:
         LOG=qemu-${{ matrix.arch }}.log
         ${{ matrix.arch }}-linux-musl-gcc --version
         make ARCH=${{ matrix.arch }} build
-        make ARCH=${{ matrix.arch }} img
         curl  -f -L https://github.com/Starry-OS/StarryOS/releases/download/rootfs-250905/rootfs-${{ matrix.arch }}.img.xz -O
         xz -d rootfs-${{ matrix.arch }}.img.xz
         cp rootfs-${{ matrix.arch }}.img arceos/disk.img
