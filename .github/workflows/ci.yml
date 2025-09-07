@@ -67,6 +67,7 @@ jobs:
       with:
         version: ${{ env.qemu-version }}
         arch_list: riscv64
+    
     - uses: arceos-org/setup-musl@v1
       with:
         arch: ${{ matrix.arch }}
@@ -80,12 +81,13 @@ jobs:
       timeout-minutes: 5
       run: |
         LOG=qemu-${{ matrix.arch }}.log
+        ${{ matrix.arch }}-linux-musl-gcc --version
         make ARCH=${{ matrix.arch }} build
         make ARCH=${{ matrix.arch }} img
         make ARCH=${{ matrix.arch }} run > $LOG 2>&1
         sleep 25
         pkill qemu || true
-        if grep -qE "sh-.*#|/#" $LOG; then
+        if grep -qE 'starry:~#' $LOG; then
           echo "✅ Kernel booted to BusyBox shell"
         else
           echo "❌ Boot failed, QEMU log:"
