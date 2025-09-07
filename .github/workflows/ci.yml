@@ -71,8 +71,7 @@ jobs:
       with:
         submodules: "recursive"
     
-    - name: Run alpine linux fs image
-      timeout-minutes: 5
+    - name: setup musl
       uses: arceos-org/setup-musl@v1
       with:
         arch: ${{ matrix.arch }}
@@ -82,8 +81,8 @@ jobs:
       with:
         version: ${{ env.qemu-version }}
         arch_list: riscv64
-
-    - run: |
+    - name: build and run 
+      run: |
         LOG=qemu-${{ matrix.arch }}.log
         qemu-system-${{ matrix.arch }} --version
         ${{ matrix.arch }}-linux-musl-gcc --version
@@ -100,8 +99,7 @@ jobs:
         cp disk.img arceos/disk.img
         mv disk.img rootfs-${{ matrix.arch }}.img
         make ARCH=${{ matrix.arch }} build
-        make ARCH=${{ matrix.arch }} run > $LOG 2>&1
-        sleep 25
+        timeout 20s make ARCH=${{ matrix.arch }} run 2>&1 | tee $LOG
         pkill qemu || true
         if grep -qE 'starry:~#' $LOG; then
           echo "✅ Kernel booted to BusyBox shell"
