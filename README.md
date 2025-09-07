@@ -4,12 +4,14 @@
 
 ### 1. Install System Dependencies
 
-This step may vary depending on your operating system. Here is an example based on Ubuntu 24.04:
+This step may vary depending on your operating system. Here is an example based on Debian:
 
 ```bash
 $ sudo apt update
-$ sudo apt install -y --no-install-recommends build-essential cmake clang qemu-system qemu-system-misc
+$ sudo apt install -y build-essential cmake clang qemu-system
 ```
+
+**Note:** Running on LoongArch64 requires QEMU 10. If the QEMU version in your Linux distribution is too old (e.g. Ubuntu), consider installing QEMU from [source](https://www.qemu.org/download/).
 
 ### 2. Install Musl Toolchain
 
@@ -83,7 +85,6 @@ $ make la
 Note:
 1. You don't have to rerun the build step before running. `run` will automatically rebuild it.
 2. The disk file will **not** be reset between each run. As a result, if you want to switch to another architecture, you must run `make img` with the new architecture before running `make run`.
-3. Currently we need a specially patched version of QEMU to run on LoongArch64. We'll try to fix this issue soon.
 
 ## Options
 
